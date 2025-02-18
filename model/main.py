@@ -122,8 +122,4 @@ def main():
 
 
 if __name__ == '__main__': #helps code structure such that certain parts (like main()) only run when the script is executed directly, not when it is imported
-  main()
-    
-    
-
-   
+  main()  

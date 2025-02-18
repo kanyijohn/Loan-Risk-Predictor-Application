@@ -6,21 +6,87 @@ import numpy as np # convering the input_data to an array
 
 
 # function to fetch the cleaned data of the model (we need clean data for the sidebar component which has the independent variables)
-def get_clean_data():
-  data = pd.read_csv("data/data.csv")
-  
-  data = data.drop(['Unnamed: 32', 'id'], axis=1)
-  
-  data['diagnosis'] = data['diagnosis'].map({ 'M': 1, 'B': 0 })
-  
-  return data
+def get_clean_dataset(): # loading and cleaning the data
+
+   dataset = pd.read_csv("data/german_credit_data_biased_training [MConverter.eu].csv") #reading the dataset
+    
+   # Drop 'Sex', 'ForeignWorker', and 'Telephone' fields if they exist
+   dataset.drop(['Sex', 'ForeignWorker', 'Telephone'], axis=1, inplace=True)
+
+   # Define mappings for categorical variables
+   CheckingStatus = {
+    "0_to_200": 0, "less_0": 1, "no_checking": 2, "greater_200": 3
+}
+
+   CreditHistory = {
+    "credits_paid_to_date": 0, "prior_payments_delayed": 1, "outstanding_credit": 2,
+    "all_credits_paid_back": 3, "no_credits": 4
+}
+
+   LoanPurpose = {
+    "other": 0, "car_new": 1, "furniture": 2, "retraining": 3, 
+    "education": 4, "vacation": 5, "appliances": 6, "car_used": 7, 
+    "repairs": 8, "radio_tv": 9, "business": 10
+}
+
+   ExistingSavings = {
+    "100_to_500": 0, "less_100": 1, "500_to_1000": 2, 
+    "unknown": 3, "greater_1000": 4
+}
+
+   EmploymentDuration = {
+    "less_1": 0, "1_to_4": 1, "greater_7": 2, 
+    "4_to_7": 3, "unemployed": 4
+}
+
+   OthersOnLoan = {
+    "none": 0, "co-applicant": 1, "guarantor": 2
+}
+
+   OwnsProperty = {
+    "savings_insurance": 0, "real_estate": 1, "unknown": 2, "car_other": 3
+}
+
+   InstallmentPlans = {
+    "none": 0, "stores": 1, "bank": 2
+}
+
+   Housing = {
+    "own": 0, "free": 1, "rent": 2
+}
+
+   Job = {
+    "skilled": 0, "management_self-employed": 1, 
+    "unskilled": 2, "unemployed": 3
+}
+
+   Risk = {
+    "No Risk": 0, "Risk": 1
+}
+
+   # Apply transformations to the dataset
+   dataset['CheckingStatus'] = dataset['CheckingStatus'].replace(CheckingStatus)
+   dataset['CreditHistory'] = dataset['CreditHistory'].replace(CreditHistory)
+   dataset['LoanPurpose'] = dataset['LoanPurpose'].replace(LoanPurpose)
+   dataset['ExistingSavings'] = dataset['ExistingSavings'].replace(ExistingSavings)
+   dataset['EmploymentDuration'] = dataset['EmploymentDuration'].replace(EmploymentDuration)
+   dataset['OthersOnLoan'] = dataset['OthersOnLoan'].replace(OthersOnLoan)
+   dataset['OwnsProperty'] = dataset['OwnsProperty'].replace(OwnsProperty)
+   dataset['InstallmentPlans'] = dataset['InstallmentPlans'].replace(InstallmentPlans)
+   dataset['Housing'] = dataset['Housing'].replace(Housing)
+   dataset['Job'] = dataset['Job'].replace(Job)
+   dataset['Risk'] = dataset ['Risk'].replace(Risk)
+
+    
+   return dataset
+
 
 
 # sidebar component for input data(cell measurements)
 def add_sidebar():
   st.sidebar.header("Cell Nuclei Measurements")
   
-  data = get_clean_data()
+  data = get_clean_dataset()
 
  # sliding function for the independent variables (columns) each with a label 
   slider_labels = [
@@ -73,23 +139,6 @@ def add_sidebar():
     
   return input_dict
 
-
-# scaling the data values
-def get_scaled_values(input_dict):
-  data = get_clean_data()
-  
-  X = data.drop(['diagnosis'], axis=1)
-  
-  scaled_dict = {} # returning the scaled dictionary
-  
-  # scales the value such that if a value is a minimum/low value then it is close as possible to 0 or if it is high/maximum value then it should be close as possible to 1
-  for key, value in input_dict.items():
-    max_val = X[key].max()
-    min_val = X[key].min()
-    scaled_value = (value - min_val) / (max_val - min_val)
-    scaled_dict[key] = scaled_value
-  
-  return scaled_dict
   
 
 # function used to get the values(cell measurements) from the dictionary of values- for plot visualization
