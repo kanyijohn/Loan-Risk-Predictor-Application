@@ -88,7 +88,7 @@ def add_sidebar():
   
   data = get_clean_dataset()
 
- # sliding function for the independent variables (columns) each with a label 
+  # sliding function for the independent variables (columns) each with a label 
   slider_labels = [
         ("Radius (mean)", "radius_mean"),
         ("Texture (mean)", "texture_mean"),
@@ -139,12 +139,13 @@ def add_sidebar():
     
   return input_dict
 
+
   
 
 # function used to get the values(cell measurements) from the dictionary of values- for plot visualization
 def get_radar_chart(input_data):
   
-  input_data = get_scaled_values(input_data) # calls the function used for scaling the data values making the radar chart more usable
+  input_data = (input_data) # calls the function used for scaling the data values making the radar chart more usable
   
   # represents the independent variables of the dataset for the 10 values
   categories = ['Radius', 'Texture', 'Perimeter', 'Area', 
@@ -211,8 +212,7 @@ def add_predictions(input_data):
   # converting all values in the input dictionary (input _data) containing the key and their corresponding values into an array to make the prediction when updating the inputs
   input_array = np.array(list(input_data.values())).reshape(1, -1)
   
-   # scaling the values each value having the same scaler[0,1] hence exporting the model to this .py file
-  input_array_scaled = scaler.transform(input_array)
+ 
   
   prediction = model.predict(input_array_scaled) # scaler logic where 0 indicates benign and 1 indicates malignant
   
