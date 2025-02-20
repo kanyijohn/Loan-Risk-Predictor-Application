@@ -112,35 +112,39 @@ def add_sidebar():
 
     return input_dict  # ✅ Now correctly inside the function
 
-import plotly.graph_objects as go
-
-import plotly.graph_objects as go
-
-# Function to generate a pie chart
-def get_pie_chart(input_data):
+# Function to generate the radar chart
+def get_radar_chart(input_data):
     # Define categories for visualization
     categories = ['Checking Status', 'Credit History', 'Loan Purpose', 
                   'Existing Savings', 'Employment Duration', 'Others on Loan',
                   'Owns Property', 'Installment Plans', 'Housing', 'Job']
-    
-    # Get corresponding values from input data
-    values = [
-        input_data['CheckingStatus'], input_data['CreditHistory'], input_data['LoanPurpose'],
-        input_data['ExistingSavings'], input_data['EmploymentDuration'], input_data['OthersOnLoan'],
-        input_data['OwnsProperty'], input_data['InstallmentPlans'], input_data['Housing'],
-        input_data['Job']
-    ]
 
-    # Create a pie chart
-    fig = go.Figure(data=[go.Pie(labels=categories, values=values, hole=0.3)])
+    fig = go.Figure()
 
-    # Update layout
-    fig.update_layout(title_text="Loan Applicant's Financial Profile Distribution")
+    # Applicant's Data Trace
+    fig.add_trace(go.Scatterpolar(
+        r=[
+            input_data['CheckingStatus'], input_data['CreditHistory'], input_data['LoanPurpose'],
+            input_data['ExistingSavings'], input_data['EmploymentDuration'], input_data['OthersOnLoan'],
+            input_data['OwnsProperty'], input_data['InstallmentPlans'], input_data['Housing'],
+            input_data['Job']
+        ],
+        theta=categories,  # Define angular axis categories
+        fill='toself',  # Fills the chart for better visibility
+        name='Applicant Profile'
+    ))
+
+    # Customize layout
+    fig.update_layout(
+        polar=dict(
+            radialaxis=dict(
+                visible=True,
+                range=[0, 3]  # Adjust range based on categorical encoding
+            )),
+        showlegend=True
+    )
 
     return fig
-
-
-
 
 # function for the prediction column
 def add_predictions(input_data):
@@ -172,32 +176,33 @@ def add_predictions(input_data):
 
 # page configuration- main function 
 def main():
-  st.set_page_config(
-    page_title="Breast Cancer Diagnosis Predictor",
-    page_icon=":female-doctor:",
-    layout="wide",
-    initial_sidebar_state="expanded"
-  )
+ st.set_page_config(
+        page_title="Loan Risk Predictor",
+        page_icon="💰",
+        layout="wide",
+        initial_sidebar_state="expanded"
+    )
   
   # importig the style.css file- under page configuration
-  with open("assets/style.css") as f: # opening the assets folder containing the style.css as f for file
+with open("assets/style.css") as f: # opening the assets folder containing the style.css as f for file
     st.markdown("<style>{}</style>".format(f.read()), unsafe_allow_html=True) # makes the style.css be read as a markdown html file
   
-  input_data = add_sidebar() # returns the data values from the sidebar where there exists dictionary of values(the key) of the independent variables
+input_data = add_sidebar() # returns the data values from the sidebar where there exists dictionary of values(the key) of the independent variables
   
-  with st.container():
-    st.title("Breast Cancer Diagnosis Predictor")
-    st.write("This application predicts using a machine learning model whether a breast mass is benign or malignant based on the measurements it receives from your cytosis lab. You can update the cell measurements using the sliders on the sidebar.")
+with st.container():
+    st.title("🏦 Loan Risk Predictor Application")
+    st.write("Predicts loan approval risk based on financial and personal information.")
+
   
-  col1, col2 = st.columns([4,1]) # creating the columns(first column(radar chart column) should be 4 times larger than the second column(diagnosis prediction column))
+col1, col2 = st.columns([4,1]) # creating the columns(first column(radar chart column) should be 4 times larger than the second column(diagnosis prediction column))
   
   # column 1- plot visualization display
-  with col1:
-    radar_chart = get_pie_chart(input_data) # arguments taking the dictionary of values from the sidebar (data input-cell measurements)
+with col1:
+    radar_chart = get_radar_chart(input_data) # arguments taking the dictionary of values from the sidebar (data input-cell measurements)
     st.plotly_chart(radar_chart) # passing in the figure element- the figure function
 
   # column 2- cancer prediction display  
-  with col2:
+with col2:
     add_predictions(input_data)
 
 

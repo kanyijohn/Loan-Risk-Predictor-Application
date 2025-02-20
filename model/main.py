@@ -9,8 +9,7 @@ def create_model(dataset): # creating the model
     X = dataset.drop(['Risk'], axis=1) #predictors (independent variables)-all columns except diagnosis 
     y = dataset['Risk'] #target variable
 
-    dataset = dataset.astype(float)
-    X_train, X_test = X_train.align(X_test, join='left', axis=1, fill_value=0)
+   
 
 # split the data
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
@@ -101,7 +100,11 @@ def get_clean_dataset(): # loading and cleaning the data
    dataset['Job'] = dataset['Job'].replace(Job)
    dataset['Risk'] = dataset ['Risk'].replace(Risk)
 
-    
+   dataset = dataset.astype(float)
+   
+   print(dataset.dtypes)  # Should show only int64 or float64
+
+
    return dataset
 
 
